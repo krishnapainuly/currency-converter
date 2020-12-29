@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import './CurrencyExchangeComponent.css';
 
-
-const BASE_URL = '//data.fixer.io/api/latest?access_key=5348a729ebda2cff1b4e82f52d4d0376';
+const BASE_URL = 'https://v6.exchangerate-api.com/v6/7ecfe761bceafc74387b295f/latest/';
 class CurrencyExchangeComponent extends Component {
 
 
@@ -45,6 +44,7 @@ class CurrencyExchangeComponent extends Component {
         var amountCurrency = this.state.amountCurrency;
         var convertToCurrency = this.state.convertToCurrency;
         var convertedAmount = '';
+
         if (!amount || parseInt(amount) <= 0) {
             this.setState({ error: 'Amount should be greater than zero.' });
         }
@@ -56,27 +56,27 @@ class CurrencyExchangeComponent extends Component {
             console.log('Convert to currency cannot be empty.');
         }
         else {
-            var url = BASE_URL + '&base=' + amountCurrency + '&symbols=' + convertToCurrency;
+            var url = BASE_URL + amountCurrency;
             fetch(url).then((response) => response.json()).then(function (data) {
-                if (data.success) {
-                    if (Object.keys(data.rates)[0] === convertToCurrency.toUpperCase()) {
-                        convertedAmount = data.rates[Object.keys(data.rates)[0]] * amount;
-                        this.setState({ convertedAmount: convertedAmount.toFixed(2), error: '' });
-                    }
-                } else if (data.error.code === 201) {
-                    this.setState({ error: 'Invalid currency code to be exchanged.' })
-                    console.log('Invalid currency code to be exchanged.');
-                }
-                else if (data.error.code === 202) {
-                    this.setState({ error: 'Invalid convert to currency code.' })
-                    console.log('Invalid convert to currency code.');
-                }
-                else if (data.error.code === 105) {
-                    console.log(data);
-                    this.setState({ error: 'Currency conversion not supported.' })
-                    console.log('Currency conversion not supported.');
-                }
+                if (data.result === 'success') {
+                    var isFound = false;
 
+                    for (const [key, value] of Object.entries(data.conversion_rates)) {
+                        if (key === convertToCurrency.toUpperCase()) {
+                            isFound = true;
+                            convertedAmount = value * amount;
+                            this.setState({ convertedAmount: convertedAmount.toFixed(2), error: '' });
+                            break;
+                        }
+                    }
+                    if (!isFound) {
+                        this.setState({ error: 'Invalid convert to currency code.', convertedAmount: '' });
+                        console.log('Invalid convert to currency code.');
+                    }
+                } else {
+                    this.setState({ error: 'Currency code not supported.', convertedAmount: '' });
+                    console.log('Currency code not supported.');
+                }
             }.bind(this)).catch((error) => console.log(error));
         }
     }
