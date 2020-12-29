@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import './CurrencyExchangeComponent.css';
 
 
@@ -19,11 +19,11 @@ class CurrencyExchangeComponent extends Component {
         return (
             <div className="Currency-exchange">
                 <label className="Error-message">{this.state.error}</label><br />
-                <input type="number" className="Input-field" placeholder="Amount" onChange={e => this.handleAmtChange(e)} value={this.state.amount} />&nbsp;
-                <input className="input-field" type="text" placeholder="Currency Code" onChange={e => this.handleCurrChange(e)} maxLength="3" />&nbsp;<br></br><br></br>
-                <button className="searchBtn" onClick={e => this.handleClick(e)}>Convert to</button>&nbsp;<br></br><br></br>
-                <input type="number" className="input-field" value={this.state.convertedAmount} disabled />&nbsp;
-                <input className="input-field" type="text" value={this.state.convertToCurrency} onChange={e => this.handleConvertCurrChange(e)} placeholder="Convert to currency code" />
+                <input type="number" placeholder="Amount" onChange={e => this.handleAmtChange(e)} value={this.state.amount} />&nbsp;
+                <input type="text" placeholder="Currency Code" onChange={e => this.handleCurrChange(e)} maxLength="3" />&nbsp;<br></br><br></br>
+                <button onClick={e => this.handleClick(e)}>Convert to</button>&nbsp;<br></br><br></br>
+                <input type="number" value={this.state.convertedAmount} disabled />&nbsp;
+                <input type="text" value={this.state.convertToCurrency} onChange={e => this.handleConvertCurrChange(e)} placeholder="Convert to currency code" />
             </div>
         );
     }
@@ -72,6 +72,7 @@ class CurrencyExchangeComponent extends Component {
                     console.log('Invalid convert to currency code.');
                 }
                 else if (data.error.code === 105) {
+                    console.log(data);
                     this.setState({ error: 'Currency conversion not supported.' })
                     console.log('Currency conversion not supported.');
                 }
