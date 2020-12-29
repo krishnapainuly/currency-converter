@@ -1,0 +1,12 @@
+.Currency-exchange{
+    border-style: solid;
+    border-color: black;
+    display: inline-block;
+    background-color: lightskyblue;
+    padding: 20px;
+}
+
+.Error-message{
+    background-color: #F8E0E0;
+    color: red;
+}

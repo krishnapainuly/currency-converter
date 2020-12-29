@@ -1,12 +1,14 @@
 import React, { Component, useState } from "react";
-import './AttractionComponent.css';
+import './CurrencyExchangeComponent.css';
+
 
 const BASE_URL = '//data.fixer.io/api/latest?access_key=5348a729ebda2cff1b4e82f52d4d0376';
-class AttractionComponent extends Component {
+class CurrencyExchangeComponent extends Component {
+
 
     constructor() {
         super();
-        this.state = { amount: '', convertedAmount: '', amountCurrency: '', convertToCurrency: '' };
+        this.state = { amount: '', convertedAmount: '', amountCurrency: '', convertToCurrency: '', error: '' };
         this.handleAmtChange = this.handleAmtChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleCurrChange = this.handleCurrChange.bind(this);
@@ -15,13 +17,14 @@ class AttractionComponent extends Component {
 
     render() {
         return (
-            <>
+            <div className="Currency-exchange">
+                <label className="Error-message">{this.state.error}</label><br />
                 <input type="number" className="Input-field" placeholder="Amount" onChange={e => this.handleAmtChange(e)} value={this.state.amount} />&nbsp;
-                <input className="input-field" type="text" placeholder="Currency Code" onChange={e => this.handleCurrChange(e)} maxLength="3" />&nbsp;
-                <button className="searchBtn" onClick={e => this.handleClick(e)}>Convert to</button>&nbsp;
-                <input type="number" className="input-field" value={this.state.convertedAmount} />&nbsp;
+                <input className="input-field" type="text" placeholder="Currency Code" onChange={e => this.handleCurrChange(e)} maxLength="3" />&nbsp;<br></br><br></br>
+                <button className="searchBtn" onClick={e => this.handleClick(e)}>Convert to</button>&nbsp;<br></br><br></br>
+                <input type="number" className="input-field" value={this.state.convertedAmount} disabled />&nbsp;
                 <input className="input-field" type="text" value={this.state.convertToCurrency} onChange={e => this.handleConvertCurrChange(e)} placeholder="Convert to currency code" />
-            </>
+            </div>
         );
     }
 
@@ -41,38 +44,41 @@ class AttractionComponent extends Component {
         var amount = this.state.amount;
         var amountCurrency = this.state.amountCurrency;
         var convertToCurrency = this.state.convertToCurrency;
-        if (!amount && amount <= 0) {
-            alert('Amount should be greater than zero.');
+        var convertedAmount = '';
+        if (!amount || parseInt(amount) <= 0) {
+            this.setState({ error: 'Amount should be greater than zero.' });
         }
         else if (!amountCurrency) {
-            alert('Currency cannot be empty.');
+            this.setState({ error: 'Currency code cannot be empty.' });
+            console.log('Currency cannot be empty.');
         } else if (!convertToCurrency) {
-            alert('Convert to currency cannot be empty.');
+            this.setState({ error: 'Convert to currency code cannot be empty.' });
+            console.log('Convert to currency cannot be empty.');
         }
         else {
             var url = BASE_URL + '&base=' + amountCurrency + '&symbols=' + convertToCurrency;
-            var finalAmt = '';
             fetch(url).then((response) => response.json()).then(function (data) {
                 if (data.success) {
                     if (Object.keys(data.rates)[0] === convertToCurrency.toUpperCase()) {
-                        finalAmt = data.rates[Object.keys(data.rates)[0]] * amount;
-                        alert(finalAmt);
+                        convertedAmount = data.rates[Object.keys(data.rates)[0]] * amount;
+                        this.setState({ convertedAmount: convertedAmount.toFixed(2), error: '' });
                     }
                 } else if (data.error.code === 201) {
+                    this.setState({ error: 'Invalid currency code to be exchanged.' })
                     console.log('Invalid currency code to be exchanged.');
                 }
                 else if (data.error.code === 202) {
-                    console.log('Invalid currency code to currency code.');
+                    this.setState({ error: 'Invalid convert to currency code.' })
+                    console.log('Invalid convert to currency code.');
                 }
                 else if (data.error.code === 105) {
+                    this.setState({ error: 'Currency conversion not supported.' })
                     console.log('Currency conversion not supported.');
                 }
 
-            }).catch((error) => console.log(error));
-            this.setState({ convertedAmount: finalAmt });
-            console.log('result' + this.state + ' : ' + this.state.convertedAmount + ' : ' + finalAmt);
+            }.bind(this)).catch((error) => console.log(error));
         }
     }
 }
 
-export default AttractionComponent;
+export default CurrencyExchangeComponent;

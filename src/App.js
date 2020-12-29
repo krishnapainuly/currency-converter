@@ -1,5 +1,5 @@
 import './App.css';
-import AttractionComponent from './AttractionComponent';
+import AttractionComponent from './CurrencyExchangeComponent';
 
 function App() {
   return (
