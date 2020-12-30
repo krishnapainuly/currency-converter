@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import './CurrencyExchangeComponent.css';
 
 const BASE_URL = 'https://v6.exchangerate-api.com/v6/7ecfe761bceafc74387b295f/latest/';
+
+/**
+ * Currency Exchange Component
+ */
 class CurrencyExchangeComponent extends Component {
-
-
     constructor() {
         super();
         this.state = { amount: '', convertedAmount: '', amountCurrency: '', convertToCurrency: '', error: '' };
@@ -22,7 +24,7 @@ class CurrencyExchangeComponent extends Component {
                 <input type="text" placeholder="Currency Code" onChange={e => this.handleCurrChange(e)} maxLength="3" />&nbsp;<br></br><br></br>
                 <button onClick={e => this.handleClick(e)}>Convert to</button>&nbsp;<br></br><br></br>
                 <input type="number" value={this.state.convertedAmount} disabled />&nbsp;
-                <input type="text" value={this.state.convertToCurrency} onChange={e => this.handleConvertCurrChange(e)} placeholder="Convert to currency code" />
+                <input type="text" value={this.state.convertToCurrency} onChange={e => this.handleConvertCurrChange(e)} placeholder="Convert to currency code" maxLength="3" />
             </div>
         );
     }
