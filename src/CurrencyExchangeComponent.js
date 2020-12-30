@@ -34,11 +34,11 @@ class CurrencyExchangeComponent extends Component {
     }
 
     handleCurrChange(e) {
-        this.setState({ amountCurrency: e.target.value })
+        this.setState({ amountCurrency: e.target.value, convertedAmount: '' })
     }
 
     handleConvertCurrChange(e) {
-        this.setState({ convertToCurrency: e.target.value })
+        this.setState({ convertToCurrency: e.target.value, convertedAmount: '' })
     }
 
     handleClick(event) {
